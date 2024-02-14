@@ -8,6 +8,7 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import java.io.Serializable;
 import java.util.Properties;
@@ -19,13 +20,17 @@ public class BatchResource {
     @Inject
     private QuarkusJobOperator quarkusJobOperator;
 
+    @Inject
+    @ConfigProperty(name = "quarkus.jberet.max-async")
+    private int threads;
+
     @POST
     @Path("/execute")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response ejecutar(RequestData requestData) {
 
         Properties jobParameters = new Properties();
-        jobParameters.setProperty("batch-size", requestData.getBatchSize());
+        jobParameters.setProperty("max-batch-in-memory", requestData.getMaxBatchSize());
 
         long id = quarkusJobOperator.start("scheduler-job", jobParameters);
 
@@ -33,14 +38,14 @@ public class BatchResource {
     }
 
     public static class RequestData implements Serializable {
-        private String batchSize;
+        private String maxBatchSize;
 
-        public String getBatchSize() {
-            return batchSize;
+        public String getMaxBatchSize() {
+            return maxBatchSize;
         }
 
-        public void setBatchSize(String batchSize) {
-            this.batchSize = batchSize;
+        public void setMaxBatchSize(String maxBatchSize) {
+            this.maxBatchSize = maxBatchSize;
         }
     }
 }
