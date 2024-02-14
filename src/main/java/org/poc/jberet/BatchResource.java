@@ -9,6 +9,8 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.eclipse.microprofile.rest.client.inject.RestClient;
+import org.poc.jberet.dto.TransaccionDto;
 
 import java.io.Serializable;
 import java.util.Properties;
@@ -23,6 +25,10 @@ public class BatchResource {
     @Inject
     @ConfigProperty(name = "quarkus.jberet.max-async")
     private int threads;
+
+    @Inject
+    @RestClient
+    private DataService dataService;
 
     @POST
     @Path("/execute")

@@ -3,7 +3,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.poc</groupId>
-  <artifactId>poc-batch-jberet</artifactId>
+  <artifactId>quarkus-batch-jberet</artifactId>
   <version>1.0.0-SNAPSHOT</version>
   <properties>
     <compiler-plugin.version>3.12.1</compiler-plugin.version>
@@ -29,22 +29,22 @@
   </dependencyManagement>
   <dependencies>
     <!--   Librerías Reactivas   -->
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-resteasy-reactive-jackson</artifactId>
-    </dependency>
+<!--    <dependency>-->
+<!--      <groupId>io.quarkus</groupId>-->
+<!--      <artifactId>quarkus-resteasy-reactive-jackson</artifactId>-->
+<!--    </dependency>-->
 <!--    <dependency>-->
 <!--      <groupId>io.quarkus</groupId>-->
 <!--      <artifactId>quarkus-hibernate-reactive-panache</artifactId>-->
 <!--    </dependency>-->
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-resteasy-reactive</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-reactive-pg-client</artifactId>
-    </dependency>
+<!--    <dependency>-->
+<!--      <groupId>io.quarkus</groupId>-->
+<!--      <artifactId>quarkus-resteasy-reactive</artifactId>-->
+<!--    </dependency>-->
+<!--    <dependency>-->
+<!--      <groupId>io.quarkus</groupId>-->
+<!--      <artifactId>quarkus-reactive-pg-client</artifactId>-->
+<!--    </dependency>-->
 
     <!--   Librerías   -->
     <dependency>
@@ -62,11 +62,11 @@
       <artifactId>quarkus-jberet</artifactId>
       <version>2.3.0</version>
     </dependency>
-<!--    <dependency>-->
-<!--      <groupId>io.quarkiverse.jberet</groupId>-->
-<!--      <artifactId>quarkus-jberet-rest</artifactId>-->
-<!--      <version>2.3.0</version>-->
-<!--    </dependency>-->
+    <dependency>
+      <groupId>io.quarkiverse.jberet</groupId>
+      <artifactId>quarkus-jberet-rest</artifactId>
+      <version>2.3.0</version>
+    </dependency>
 
 
     <!--   Test   -->

@@ -39,13 +39,13 @@ public class DataItemReader implements ItemReader {
 
         entityIterator = pageEntities.iterator();
 
-        Log.info("Page-" + page + ": " + pageEntities.size() + " obtenidos.");
+        Log.info("\t Obtenido: page " + page + " con " + pageEntities.size() + " items.");
     }
 
     @Override
     public void close() {
         entityIterator.remove();
-        Log.info("Page-" + page + ": terminada.");
+        Log.info("\t Finalizado: page " + page);
 
     }
 

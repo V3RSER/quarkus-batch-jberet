@@ -37,7 +37,7 @@ public class CreateJobsBatchlet implements Batchlet {
         long startTime = System.currentTimeMillis();
         createJobs();
         double duration = (System.currentTimeMillis() - startTime) / 1000.0;
-        Log.info("Trabajo realizado en " + Math.round(duration * 10.0) / 10.0 + " s.");
+        Log.info(Transaccion.getDataCount() + " items procesados en " + Math.round(duration * 10.0) / 10.0 + " s.");
         return BatchStatus.COMPLETED.toString();
     }
 
