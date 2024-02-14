@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<job id="processData" xmlns="http://xmlns.jcp.org/xml/ns/javaee" version="1.0">
+    <listeners>
+        <listener ref="threadJobListener">
+            <properties>
+                <property name="page" value="#{jobParameters['page']}"/>
+                <property name="batch-size" value="#{jobParameters['batch-size']}"/>
+            </properties>
+        </listener>
+    </listeners>
+    <step id="processDataStep">
+        <chunk>
+            <reader ref="dataItemReader">
+                <properties>
+                    <property name="page" value="#{jobParameters['page']}"/>
+                    <property name="batch-size" value="#{jobParameters['batch-size']}"/>
+                </properties>
+            </reader>
+            <processor ref="dataItemProcessor"/>
+            <writer ref="dataItemWriter"/>
+        </chunk>
+    </step>
+</job>
