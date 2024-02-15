@@ -1,7 +1,6 @@
 package org.poc.jberet.chunk;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
-import io.quarkus.logging.Log;
 import jakarta.batch.api.BatchProperty;
 import jakarta.batch.api.chunk.ItemReader;
 import jakarta.enterprise.context.Dependent;
@@ -12,7 +11,6 @@ import org.poc.panache.entity.Transaccion;
 
 import java.io.Serializable;
 import java.util.Iterator;
-import java.util.List;
 
 @Dependent
 @Named
@@ -32,14 +30,10 @@ public class DataItemReader implements ItemReader {
 
     @Override
     public void open(Serializable checkpoint) throws Exception {
-
-        List<PanacheEntityBase> pageEntities = Transaccion.find("#Transaccion.findByCuentaMarcada")
+        entityIterator = Transaccion.find("#Transaccion.findByCuentaMarcada")
                 .page(page, pageSize)
-                .list();
-
-        entityIterator = pageEntities.iterator();
-
-        Log.info(" \tPage-" + page + ":\t obtenidos "+ pageEntities.size() + " items.");
+                .list()
+                .iterator();
     }
 
     @Override
@@ -48,7 +42,7 @@ public class DataItemReader implements ItemReader {
     }
 
     @Override
-    public Object readItem() throws Exception {
+    public Object readItem() {
         return entityIterator.hasNext() ? entityIterator.next() : null;
     }
 

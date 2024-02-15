@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<job id="schedulerCreateJobs" xmlns="http://xmlns.jcp.org/xml/ns/javaee" version="1.0">
-    <step id="createJobsStep">
-        <batchlet ref="createJobsBatchlet">
+<job id="schedulerInstanceJobs" xmlns="http://xmlns.jcp.org/xml/ns/javaee" version="1.0">
+    <step id="instanceJobsStep">
+        <batchlet ref="instanceJobsBatchlet">
             <properties>
                 <property name="max-batch-in-memory" value="#{jobParameters['max-batch-in-memory']}"/>
             </properties>
