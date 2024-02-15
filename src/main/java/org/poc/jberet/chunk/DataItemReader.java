@@ -24,8 +24,8 @@ public class DataItemReader implements ItemReader {
     private int page;
 
     @Inject
-    @BatchProperty(name = "batch-size")
-    private int batchSize;
+    @BatchProperty(name = "page-size")
+    private int pageSize;
 
     private Iterator<PanacheEntityBase> entityIterator;
 
@@ -34,18 +34,17 @@ public class DataItemReader implements ItemReader {
     public void open(Serializable checkpoint) throws Exception {
 
         List<PanacheEntityBase> pageEntities = Transaccion.find("#Transaccion.findByCuentaMarcada")
-                .page(page, batchSize)
+                .page(page, pageSize)
                 .list();
-        Log.info("Page-" + page + ": " + pageEntities.size() + " obtenidos.");
 
         entityIterator = pageEntities.iterator();
+
+        Log.info(" \tPage-" + page + ":\t obtenidos "+ pageEntities.size() + " items.");
     }
 
     @Override
     public void close() {
         entityIterator.remove();
-        Log.info("Page-" + page + ": terminada.");
-
     }
 
     @Override

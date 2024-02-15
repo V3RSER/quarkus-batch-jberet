@@ -1,7 +1,9 @@
 package org.poc.jberet.dto;
 
 
-public class TransaccionDto {
+import java.io.Serializable;
+
+public class TransaccionDto implements Serializable {
 
     public Long numeroTransaccion;
 

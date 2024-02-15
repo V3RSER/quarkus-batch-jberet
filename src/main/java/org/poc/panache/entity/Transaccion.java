@@ -13,12 +13,6 @@ import jakarta.transaction.Transactional;
                 query = "SELECT t FROM Transaccion t " +
                         "INNER JOIN Cuenta c ON t.numeroCuenta = c.numeroCuenta " +
                         "WHERE c.marcada = true"
-        ),
-        @NamedQuery(
-                name = "Transaccion.countByCuentaMarcada",
-                query = "SELECT COUNT(t) FROM Transaccion t " +
-                        "INNER JOIN Cuenta c ON t.numeroCuenta = c.numeroCuenta " +
-                        "WHERE c.marcada = true"
         )
 })
 public class Transaccion extends PanacheEntityBase {
