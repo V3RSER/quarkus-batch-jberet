@@ -75,18 +75,25 @@ public class BatchResource {
             switch (status) {
                 case STARTING:
                     this.STARTING++;
+                    break;
                 case STARTED:
                     this.STARTED++;
+                    break;
                 case STOPPING:
                     this.STOPPING++;
+                    break;
                 case STOPPED:
                     this.STOPPED++;
+                    break;
                 case FAILED:
                     this.FAILED++;
+                    break;
                 case COMPLETED:
                     this.COMPLETED++;
+                    break;
                 case ABANDONED:
                     this.ABANDONED++;
+                    break;
             }
         }
     }
