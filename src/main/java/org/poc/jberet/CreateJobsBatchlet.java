@@ -61,6 +61,7 @@ public class CreateJobsBatchlet implements Batchlet {
                 .map(jobParameters -> quarkusJobOperator.start("process-job", jobParameters))
                 .toList();
 
+        Log.info("Jobs instanciados: " + jobIds.size());
         waitForJobs(jobIds);
     }
 

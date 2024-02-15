@@ -10,7 +10,6 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
-import org.poc.jberet.dto.TransaccionDto;
 
 import java.io.Serializable;
 import java.util.Properties;
@@ -33,14 +32,63 @@ public class BatchResource {
     @POST
     @Path("/execute")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response ejecutar(RequestData requestData) {
+    public Response ejecutar(RequestData requestData) throws InterruptedException {
 
         Properties jobParameters = new Properties();
         jobParameters.setProperty("max-batch-in-memory", requestData.getMaxBatchSize());
+        quarkusJobOperator.start("scheduler-job", jobParameters);
+        Thread.sleep(800);
 
-        long id = quarkusJobOperator.start("scheduler-job", jobParameters);
+        var jobStatus = new BatchStatus();
+        var jobsData = quarkusJobOperator.getJobExecutionsByJob("processData").stream()
+                .map(jobId -> quarkusJobOperator.getJobExecution(jobId))
+                .peek(jobExecution -> jobStatus.evaluate(jobExecution.getBatchStatus()))
+                .toList();
 
-        return Response.ok(quarkusJobOperator.getJobExecution(id).getBatchStatus().toString()).build();
+        var body = new ResponseData(jobsData.size(), jobStatus);
+        return Response.ok(body).build();
+    }
+
+    public static class ResponseData implements Serializable {
+        public int numJobs;
+        public BatchStatus batchStatus;
+
+        public ResponseData(int numJobs, BatchStatus batchStatus) {
+            this.numJobs = numJobs;
+            this.batchStatus = batchStatus;
+        }
+    }
+
+    public static class BatchStatus implements Serializable {
+        public int STARTING = 0;
+        public int STARTED = 0;
+        public int STOPPING = 0;
+        public int STOPPED = 0;
+        public int FAILED = 0;
+        public int COMPLETED = 0;
+        public int ABANDONED = 0;
+
+        public BatchStatus() {
+        }
+
+        public void evaluate(jakarta.batch.runtime.BatchStatus status) {
+            switch (status) {
+                case STARTING:
+                    this.STARTING++;
+                case STARTED:
+                    this.STARTED++;
+                case STOPPING:
+                    this.STOPPING++;
+                case STOPPED:
+                    this.STOPPED++;
+                case FAILED:
+                    this.FAILED++;
+                case COMPLETED:
+                    this.COMPLETED++;
+                case ABANDONED:
+                    this.ABANDONED++;
+            }
+        }
     }
 
     public static class RequestData implements Serializable {

@@ -1,9 +1,12 @@
 package org.poc.jberet.chunk;
 
+import io.quarkus.logging.Log;
+import jakarta.batch.api.BatchProperty;
 import jakarta.batch.api.chunk.AbstractItemWriter;
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.poc.jberet.DataService;
 import org.poc.jberet.dto.TransaccionDto;
@@ -18,10 +21,24 @@ public class DataItemWriter extends AbstractItemWriter {
     @RestClient
     private DataService dataService;
 
+    @Inject
+    @BatchProperty(name = "page")
+    private int page;
+
     @Override
     public void writeItems(List<Object> items) throws InterruptedException {
-//        Log.info("Enviando: " + items.size() + " items.");
-//        Log.info("\t\tEnviando id-" + transaccionDto.getNumeroTransaccion());
-        items.forEach(item -> dataService.execute((TransaccionDto) item));
+//        items.forEach(item -> dataService.execute((TransaccionDto) item));
+        for (int i = 0; i < items.size(); i++) {
+            TransaccionDto item = (TransaccionDto) items.get(i);
+            try {
+                Response response = dataService.execute(item);
+                Log.info(" \t --> Page-" + page + ":\t item (" + (i + 1) + "/" + items.size() + ") status: " + response.getStatus());
+                response.close();
+            } catch (Exception e) {
+                Log.error(" \t --> Page-" + page + ":\t item (" + (i + 1) + "/" + items.size() + ") error: " + e.getMessage());
+            }
+        }
+
+        Log.info(" \t Page-" + page + ":\t enviados " + items.size() + " items.");
     }
 }

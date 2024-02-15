@@ -9,7 +9,7 @@
         </listener>
     </listeners>
     <step id="processDataStep">
-        <chunk>
+        <chunk item-count="#{jobParameters['page-size']}">
             <reader ref="dataItemReader">
                 <properties>
                     <property name="page" value="#{jobParameters['page']}"/>
@@ -17,7 +17,11 @@
                 </properties>
             </reader>
             <processor ref="dataItemProcessor"/>
-            <writer ref="dataItemWriter"/>
+            <writer ref="dataItemWriter">
+                <properties>
+                    <property name="page" value="#{jobParameters['page']}"/>
+                </properties>
+            </writer>
         </chunk>
     </step>
 </job>
