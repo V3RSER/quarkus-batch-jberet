@@ -9,7 +9,10 @@ import jakarta.batch.runtime.BatchStatus;
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import jakarta.transaction.Transactional;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.poc.panache.CuentaRepository;
+import org.poc.panache.entity.Cuenta;
 import org.poc.panache.entity.Transaccion;
 
 import java.util.List;
@@ -20,6 +23,7 @@ import java.util.stream.IntStream;
 
 @Named
 @Dependent
+@Transactional
 public class InstanceJobsBatchlet implements Batchlet {
 
     @Inject
@@ -31,7 +35,6 @@ public class InstanceJobsBatchlet implements Batchlet {
     @ConfigProperty(name = "quarkus.jberet.max-async")
     private int threads;
 
-
     @Override
     public String process() {
         long startTime = System.currentTimeMillis();
@@ -39,7 +42,7 @@ public class InstanceJobsBatchlet implements Batchlet {
         instanceJobs();
 
         double duration = (System.currentTimeMillis() - startTime) / 1000.0;
-        Log.info(Transaccion.getDataCount() + " items procesados en " + Math.round(duration * 10.0) / 10.0 + " s.");
+        Log.info(Cuenta.count() + " items procesados en " + Math.round(duration * 10.0) / 10.0 + " s.");
 
         return BatchStatus.COMPLETED.toString();
     }
@@ -49,7 +52,7 @@ public class InstanceJobsBatchlet implements Batchlet {
     }
 
     private void instanceJobs() {
-        long totalDataCount = Transaccion.getDataCount();
+        long totalDataCount = Cuenta.count();
 
         var pageSize = calculatePageSize(totalDataCount);
         var totalPages = calculateTotalPages(totalDataCount, pageSize);

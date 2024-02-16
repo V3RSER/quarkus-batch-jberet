@@ -10,29 +10,29 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;
 import jakarta.ws.rs.ext.Provider;
 import org.jboss.logging.Logger;
-import org.poc.panache.entity.Transaccion;
+import org.poc.panache.entity.Cuenta;
 
 import java.util.List;
 
-@Path("transacciones")
+@Path("cuentas")
 @ApplicationScoped
 @Produces("application/json")
 @Consumes("application/json")
-public class TransaccionResource {
+public class CuentaResource {
 
-    private static final Logger LOGGER = Logger.getLogger(TransaccionResource.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(CuentaResource.class.getName());
 
     @GET
-    public List<Transaccion> get() {
-        return Transaccion.find("#Transaccion.findByCuentaMarcada")
+    public List<Cuenta> get() {
+        return Cuenta.findAll()
                 .page(1, 10)
                 .list();
     }
 
     @GET
     @Path("{id}")
-    public Transaccion getSingle(Long id) {
-        return Transaccion.findById(id);
+    public Cuenta getSingle(Long id) {
+        return Cuenta.findById(id);
     }
 
     @Provider
@@ -53,7 +53,7 @@ public class TransaccionResource {
             }
 
             // This is a Mutiny exception and it happens, for example, when we try to insert a new
-            // Transaccion but the name is already in the database
+            // Cuenta but the name is already in the database
             if (throwable instanceof CompositeException) {
                 throwable = throwable.getCause();
             }

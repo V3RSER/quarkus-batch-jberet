@@ -4,17 +4,17 @@ import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;
 import jakarta.transaction.Transactional;
 
-@Entity
-@Cacheable
-@Table(name = "transacciones")
-@NamedQueries({
-        @NamedQuery(
-                name = "Transaccion.findByCuentaMarcada",
-                query = "SELECT t FROM Transaccion t " +
-                        "INNER JOIN Cuenta c ON t.numeroCuenta = c.numeroCuenta " +
-                        "WHERE c.marcada = true"
-        )
-})
+//@Entity
+//@Cacheable
+//@Table(name = "transacciones")
+//@NamedQueries({
+//        @NamedQuery(
+//                name = "Transaccion.findByCuentaMarcada",
+//                query = "SELECT t FROM Transaccion t " +
+//                        "INNER JOIN Cuenta c ON t.numeroCuenta = c.numeroCuenta " +
+//                        "WHERE c.marcada = true"
+//        )
+//})
 public class Transaccion extends PanacheEntityBase {
 
     @Id
