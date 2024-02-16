@@ -2,6 +2,7 @@ package org.poc.panache;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import io.quarkus.panache.common.Sort;
 import io.smallrye.mutiny.CompositeException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -12,6 +13,7 @@ import jakarta.ws.rs.ext.Provider;
 import org.jboss.logging.Logger;
 import org.poc.panache.entity.Cuenta;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Path("cuentas")
@@ -27,6 +29,22 @@ public class CuentaResource {
         return Cuenta.findAll()
                 .page(1, 10)
                 .list();
+    }
+
+    @POST
+    @Path("/page")
+    public List<Integer> page(RequestPage requestPage) {
+        List<Cuenta> cuentas = Cuenta.findAll(Sort.by("idCuenta"))
+                .page(requestPage.page, requestPage.pageSize)
+                .list();
+
+        return cuentas.stream().map(Cuenta::getIdCuenta).toList();
+    }
+
+    public static class RequestPage implements Serializable {
+
+        public Integer page;
+        public Integer pageSize;
     }
 
     @GET

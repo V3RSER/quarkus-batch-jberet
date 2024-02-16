@@ -1,14 +1,14 @@
-package org.poc.jberet.chunk.send;
+package org.poc.jberet.process.send;
 
 import jakarta.batch.api.chunk.ItemProcessor;
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Named;
-import org.poc.jberet.dto.CuentaDto;
+import org.poc.panache.dto.CuentaDto;
 import org.poc.panache.entity.Cuenta;
 
 @Dependent
 @Named
-public class SendItemProcessor implements ItemProcessor {
+public class CuentaDataProcessor implements ItemProcessor {
 
         @Override
         public Object processItem(Object item) {

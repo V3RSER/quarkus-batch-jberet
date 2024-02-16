@@ -1,6 +1,7 @@
-package org.poc.jberet.chunk.send;
+package org.poc.jberet.process.send;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+import io.quarkus.panache.common.Sort;
 import jakarta.batch.api.BatchProperty;
 import jakarta.batch.api.chunk.ItemReader;
 import jakarta.enterprise.context.Dependent;
@@ -15,7 +16,7 @@ import java.util.Iterator;
 @Dependent
 @Named
 @Transactional
-public class SendItemReader implements ItemReader {
+public class CuentaDataReader implements ItemReader {
 
     @Inject
     @BatchProperty(name = "page")
@@ -30,7 +31,7 @@ public class SendItemReader implements ItemReader {
 
     @Override
     public void open(Serializable checkpoint) throws Exception {
-        entityIterator = Cuenta.findAll()
+        entityIterator = Cuenta.findAll(Sort.by("idCuenta"))
                 .page(page, pageSize)
                 .list()
                 .iterator();

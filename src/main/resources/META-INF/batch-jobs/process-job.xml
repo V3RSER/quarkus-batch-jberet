@@ -10,14 +10,14 @@
     </listeners>
     <step id="sendDataStep">
         <chunk item-count="#{jobParameters['page-size']}">
-            <reader ref="sendItemReader">
+            <reader ref="cuentaDataReader">
                 <properties>
                     <property name="page" value="#{jobParameters['page']}"/>
                     <property name="page-size" value="#{jobParameters['page-size']}"/>
                 </properties>
             </reader>
-            <processor ref="sendItemProcessor"/>
-            <writer ref="sendItemWriter">
+            <processor ref="cuentaDataProcessor"/>
+            <writer ref="cuentaDataWriter">
                 <properties>
                     <property name="page" value="#{jobParameters['page']}"/>
                 </properties>

@@ -1,4 +1,4 @@
-package org.poc.jberet.dto;
+package org.poc.panache.dto;
 
 
 import java.io.Serializable;

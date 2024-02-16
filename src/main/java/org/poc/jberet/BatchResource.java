@@ -1,17 +1,20 @@
 package org.poc.jberet;
 
 import io.quarkiverse.jberet.runtime.QuarkusJobOperator;
+import io.quarkus.logging.Log;
+import io.quarkus.panache.common.Parameters;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.Produces;
+import jakarta.transaction.Transactional;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
+import org.poc.api.DataService;
+import org.poc.panache.entity.Cuenta;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Properties;
 
 @Path("/batch")
@@ -47,6 +50,16 @@ public class BatchResource {
 
         var body = new ResponseData(jobsData.size(), jobStatus);
         return Response.ok(body).build();
+    }
+
+    @GET
+    @Path("/test")
+    @Transactional
+    public Response test() {
+        List<Integer> idsProcesados = List.of(1, 2, 3, 5);
+
+        return Response.ok("ok").build();
+
     }
 
     public static class ResponseData implements Serializable {

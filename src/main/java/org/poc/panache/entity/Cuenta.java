@@ -61,6 +61,10 @@ public class Cuenta extends PanacheEntityBase {
     @Column(name = "total_entradas_debito")
     public String totalEntradasDebito;
 
+    @Column(name = "batch_ejecutado")
+    public boolean batchEjecutado;
+
+
     public Cuenta() {
     }
 
@@ -132,5 +136,4 @@ public class Cuenta extends PanacheEntityBase {
     public String getTotalEntradasDebito() {
         return totalEntradasDebito;
     }
-
 }

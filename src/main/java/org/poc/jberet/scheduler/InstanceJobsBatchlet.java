@@ -1,4 +1,4 @@
-package org.poc.jberet;
+package org.poc.jberet.scheduler;
 
 import io.quarkiverse.jberet.runtime.QuarkusJobOperator;
 import io.quarkus.logging.Log;
@@ -11,9 +11,7 @@ import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.transaction.Transactional;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
-import org.poc.panache.CuentaRepository;
 import org.poc.panache.entity.Cuenta;
-import org.poc.panache.entity.Transaccion;
 
 import java.util.List;
 import java.util.Properties;
