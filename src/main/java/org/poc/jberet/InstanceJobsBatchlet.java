@@ -15,61 +15,71 @@ import org.poc.panache.entity.Transaccion;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
 
 @Named
 @Dependent
-public class CreateJobsBatchlet implements Batchlet {
+public class InstanceJobsBatchlet implements Batchlet {
 
     @Inject
     private QuarkusJobOperator quarkusJobOperator;
     @Inject
-    @BatchProperty(name = "max-batch-in-memory")
-    private int maxBatchSize;
-
+    @BatchProperty(name = "memory-data-limit")
+    private int memoryDataLimit;
     @Inject
     @ConfigProperty(name = "quarkus.jberet.max-async")
     private int threads;
 
 
     @Override
-    public String process() throws Exception {
+    public String process() {
         long startTime = System.currentTimeMillis();
-        createJobs();
+
+        instanceJobs();
+
         double duration = (System.currentTimeMillis() - startTime) / 1000.0;
         Log.info(Transaccion.getDataCount() + " items procesados en " + Math.round(duration * 10.0) / 10.0 + " s.");
+
         return BatchStatus.COMPLETED.toString();
     }
 
     @Override
     public void stop() {
-        Log.info(this.getClass().getSimpleName() + " stop");
     }
 
-    private void createJobs() {
-        long totalRegistros = Transaccion.getDataCount();
-        long pageSize = calculatePageSize(totalRegistros);
-        int totalPages = (int) Math.ceil((double) totalRegistros / pageSize);
+    private void instanceJobs() {
+        long totalDataCount = Transaccion.getDataCount();
+
+        var pageSize = calculatePageSize(totalDataCount);
+        var totalPages = calculateTotalPages(totalDataCount, pageSize);
+        var currentPage = new AtomicInteger(0);
 
         List<Long> jobIds = IntStream.range(0, totalPages)
-                .mapToObj(i -> {
-                    Properties jobParameters = new Properties();
-                    jobParameters.setProperty("page", Integer.toString(i));
-                    jobParameters.setProperty("page-size", Long.toString(pageSize));
-                    return jobParameters;
-                })
-                .map(jobParameters -> quarkusJobOperator.start("process-job", jobParameters))
+                .parallel()
+                .mapToObj(i -> createJob(currentPage.getAndIncrement(), pageSize))
                 .toList();
 
         Log.info("Jobs instanciados: " + jobIds.size());
         waitForJobs(jobIds);
     }
 
-    private long calculatePageSize(long totalRegistros) {
-        if (totalRegistros < maxBatchSize) {
-            return (long) Math.ceil((double) totalRegistros / threads);
-        }
-        return (long) Math.ceil((double) maxBatchSize / threads);
+    private  int calculatePageSize(long totalDataCount) {
+        int pageSize = (int) (totalDataCount > memoryDataLimit ? memoryDataLimit / threads : totalDataCount / threads);
+        return pageSize == 0 ? ++pageSize : pageSize;
+    }
+
+    private  int calculateTotalPages(long totalDataCount, int pageSize) {
+        int totalPages = (int) (totalDataCount / pageSize);
+        return totalDataCount % pageSize == 0 ? totalPages : ++totalPages;
+    }
+
+
+    private Long createJob(int page, int pageSize) {
+        Properties jobParameters = new Properties();
+        jobParameters.setProperty("page", Integer.toString(page));
+        jobParameters.setProperty("page-size", Integer.toString(pageSize));
+        return quarkusJobOperator.start("process-job", jobParameters);
     }
 
     private void waitForJobs(List<Long> jobIds) {
@@ -132,7 +142,6 @@ public class CreateJobsBatchlet implements Batchlet {
         }
 
         public static synchronized void decrementJobCounter(int page) {
-//            Log.info("page: " + page + " done.");
             runningJobsCounter--;
         }
     }

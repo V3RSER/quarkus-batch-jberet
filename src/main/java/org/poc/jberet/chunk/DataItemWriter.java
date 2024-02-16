@@ -28,6 +28,8 @@ public class DataItemWriter extends AbstractItemWriter {
     @Override
     public void writeItems(List<Object> items) throws InterruptedException {
 //        items.forEach(item -> dataService.execute((TransaccionDto) item));
+        Log.info(" \tPage-" + page + ":\t obtenidos "+ items.size() + " items.");
+
         for (int i = 0; i < items.size(); i++) {
             TransaccionDto item = (TransaccionDto) items.get(i);
             try {

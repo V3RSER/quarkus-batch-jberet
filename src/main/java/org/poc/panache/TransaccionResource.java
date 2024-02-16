@@ -55,7 +55,7 @@ public class TransaccionResource {
             // This is a Mutiny exception and it happens, for example, when we try to insert a new
             // Transaccion but the name is already in the database
             if (throwable instanceof CompositeException) {
-                throwable = ((CompositeException) throwable).getCause();
+                throwable = throwable.getCause();
             }
 
             ObjectNode exceptionJson = objectMapper.createObjectNode();

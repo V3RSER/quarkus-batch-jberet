@@ -35,7 +35,7 @@ public class BatchResource {
     public Response ejecutar(RequestData requestData) throws InterruptedException {
 
         Properties jobParameters = new Properties();
-        jobParameters.setProperty("max-batch-in-memory", requestData.getMaxBatchSize());
+        jobParameters.setProperty("memory-data-limit", requestData.getMemoryDataLimit());
         quarkusJobOperator.start("scheduler-job", jobParameters);
         Thread.sleep(800);
 
@@ -75,31 +75,38 @@ public class BatchResource {
             switch (status) {
                 case STARTING:
                     this.STARTING++;
+                    break;
                 case STARTED:
                     this.STARTED++;
+                    break;
                 case STOPPING:
                     this.STOPPING++;
+                    break;
                 case STOPPED:
                     this.STOPPED++;
+                    break;
                 case FAILED:
                     this.FAILED++;
+                    break;
                 case COMPLETED:
                     this.COMPLETED++;
+                    break;
                 case ABANDONED:
                     this.ABANDONED++;
+                    break;
             }
         }
     }
 
     public static class RequestData implements Serializable {
-        private String maxBatchSize;
+        private String memoryDataLimit;
 
-        public String getMaxBatchSize() {
-            return maxBatchSize;
+        public String getMemoryDataLimit() {
+            return memoryDataLimit;
         }
 
-        public void setMaxBatchSize(String maxBatchSize) {
-            this.maxBatchSize = maxBatchSize;
+        public void setMemoryDataLimit(String memoryDataLimit) {
+            this.memoryDataLimit = memoryDataLimit;
         }
     }
 }
