@@ -3,7 +3,7 @@
     <step id="instanceJobsStep">
         <batchlet ref="instanceJobsBatchlet">
             <properties>
-                <property name="max-batch-in-memory" value="#{jobParameters['max-batch-in-memory']}"/>
+                <property name="memory-data-limit" value="#{jobParameters['memory-data-limit']}"/>
             </properties>
         </batchlet>
     </step>

@@ -25,8 +25,8 @@ public class InstanceJobsBatchlet implements Batchlet {
     @Inject
     private QuarkusJobOperator quarkusJobOperator;
     @Inject
-    @BatchProperty(name = "max-batch-in-memory")
-    private int maxBatchSize;
+    @BatchProperty(name = "memory-data-limit")
+    private int memoryDataLimit;
     @Inject
     @ConfigProperty(name = "quarkus.jberet.max-async")
     private int threads;
@@ -49,11 +49,11 @@ public class InstanceJobsBatchlet implements Batchlet {
     }
 
     private void instanceJobs() {
-        long totalCount = Transaccion.getDataCount();
+        long totalDataCount = Transaccion.getDataCount();
 
-        int pageSize = calculatePageSize(totalCount);
-        int totalPages = calculateTotalPages(totalCount, pageSize);
-        AtomicInteger currentPage = new AtomicInteger(0);
+        var pageSize = calculatePageSize(totalDataCount);
+        var totalPages = calculateTotalPages(totalDataCount, pageSize);
+        var currentPage = new AtomicInteger(0);
 
         List<Long> jobIds = IntStream.range(0, totalPages)
                 .parallel()
@@ -64,20 +64,16 @@ public class InstanceJobsBatchlet implements Batchlet {
         waitForJobs(jobIds);
     }
 
-    private int calculatePageSize(long totalCount) {
-        if (totalCount < maxBatchSize) {
-            return (int) Math.ceil((double) totalCount / threads);
-        }
-        return (int) Math.ceil((double) maxBatchSize / threads);
+    private  int calculatePageSize(long totalDataCount) {
+        int pageSize = (int) (totalDataCount > memoryDataLimit ? memoryDataLimit / threads : totalDataCount / threads);
+        return pageSize == 0 ? ++pageSize : pageSize;
     }
 
-    private int calculateTotalPages(long totalCount, int pageSize) {
-        int totalPages = (int) (totalCount / pageSize);
-        if (totalCount % pageSize != 0) {
-            totalPages++;
-        }
-        return totalPages;
+    private  int calculateTotalPages(long totalDataCount, int pageSize) {
+        int totalPages = (int) (totalDataCount / pageSize);
+        return totalDataCount % pageSize == 0 ? totalPages : ++totalPages;
     }
+
 
     private Long createJob(int page, int pageSize) {
         Properties jobParameters = new Properties();
