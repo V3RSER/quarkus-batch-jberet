@@ -1,10 +1,12 @@
 package org.poc.panache.entity;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Entity
-@Cacheable
+//@Cacheable
 @Table(name = "clientes")
 public class Cliente extends PanacheEntityBase {
 

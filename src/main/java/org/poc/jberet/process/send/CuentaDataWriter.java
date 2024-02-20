@@ -19,7 +19,7 @@ import java.util.Objects;
 
 @Dependent
 @Named
-@Transactional
+//@Transactional
 public class CuentaDataWriter extends AbstractItemWriter {
 
     @Inject
@@ -37,7 +37,7 @@ public class CuentaDataWriter extends AbstractItemWriter {
         List<Integer> successfullySentIds = sendAccounts(items);
         int updatedAccounts = updateAccountsStatus(successfullySentIds);
 
-//        Log.info(updatedAccounts + " cuentas actualizadas.");
+        Log.info(updatedAccounts + " cuentas actualizadas.");
 //        successfullySentIds.forEach(id -> {
 //            Log.info("cuenta id: " + id + " actualizada a procesada");
 //        });
@@ -49,7 +49,7 @@ public class CuentaDataWriter extends AbstractItemWriter {
                 .map(item -> (CuentaDto) item)
                 .map(accountDto -> {
                     try (Response response = dataService.execute(accountDto)) {
-//                        response.close();
+                        response.close();
                         if (response.getStatus() == 200) {
 //                            Log.info(" \t --> Page-" + page + ":\t Item id: " + accountDto.getNumCuenta() + " \tstatus: " + response.getStatus());
                             return Integer.parseInt(accountDto.getNumCuenta());
@@ -69,7 +69,7 @@ public class CuentaDataWriter extends AbstractItemWriter {
         }
 
         String updateQuery = "UPDATE Cuenta SET batchEjecutado = true WHERE idCuenta IN :ids";
-        return Cuenta.update(updateQuery, Parameters.with("ids", accountIds));
+        return Cuenta.updateStatus(updateQuery, Parameters.with("ids", accountIds));
 
     }
 }

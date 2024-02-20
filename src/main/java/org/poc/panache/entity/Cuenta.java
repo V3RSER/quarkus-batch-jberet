@@ -1,7 +1,12 @@
 package org.poc.panache.entity;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+import io.quarkus.panache.common.Parameters;
+import io.quarkus.panache.common.Sort;
 import jakarta.persistence.*;
+import jakarta.transaction.Transactional;
+
+import java.util.List;
 
 @Entity
 @Cacheable
@@ -66,6 +71,23 @@ public class Cuenta extends PanacheEntityBase {
 
 
     public Cuenta() {
+    }
+
+    @Transactional
+    public static long totalCount() {
+        return Cuenta.count();
+    }
+
+    @Transactional
+    public static int updateStatus(String query, Parameters params) {
+        return Cuenta.update(query, params);
+    }
+
+    @Transactional
+    public static List<Cuenta> findPage(int page, int pageSize) {
+        return Cuenta.findAll(Sort.by("idCuenta"))
+                .page(page, pageSize)
+                .list();
     }
 
     public String getFechaRegistro() {
