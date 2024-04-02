@@ -7,7 +7,6 @@ import jakarta.batch.api.chunk.AbstractItemWriter;
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
-import jakarta.transaction.Transactional;
 import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.poc.api.DataService;
@@ -19,7 +18,7 @@ import java.util.Objects;
 
 @Dependent
 @Named
-//@Transactional
+
 public class CuentaDataWriter extends AbstractItemWriter {
 
     @Inject
@@ -32,15 +31,12 @@ public class CuentaDataWriter extends AbstractItemWriter {
 
     @Override
     public void writeItems(List<Object> items) {
-//        Log.info(" \tPage-" + page + " :\tobtenidos "+ items.size() + " items.");
+        Log.info(" \tPage-" + page + " :\tobtenidos " + items.size() + " items.");
 
         List<Integer> successfullySentIds = sendAccounts(items);
         int updatedAccounts = updateAccountsStatus(successfullySentIds);
 
         Log.info(updatedAccounts + " cuentas actualizadas.");
-//        successfullySentIds.forEach(id -> {
-//            Log.info("cuenta id: " + id + " actualizada a procesada");
-//        });
         Log.info(" \tPage-" + page + ": \tprocesados " + items.size() + " items.");
     }
 
@@ -51,11 +47,9 @@ public class CuentaDataWriter extends AbstractItemWriter {
                     try (Response response = dataService.execute(accountDto)) {
                         response.close();
                         if (response.getStatus() == 200) {
-//                            Log.info(" \t --> Page-" + page + ":\t Item id: " + accountDto.getNumCuenta() + " \tstatus: " + response.getStatus());
                             return Integer.parseInt(accountDto.getNumCuenta());
                         }
-                    } catch (Exception e) {
-                        Log.error(" \t --> Page-" + page + ":\t Item error: " + e.getMessage());
+                    } catch (Exception ignored) {
                     }
                     return null;
                 })

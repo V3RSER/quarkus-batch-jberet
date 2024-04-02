@@ -13,7 +13,6 @@ import java.util.List;
 
 @Dependent
 @Named
-//@Transactional
 public class CuentaDataReader implements ItemReader {
 
     @Inject

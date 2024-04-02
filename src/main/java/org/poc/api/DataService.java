@@ -11,6 +11,6 @@ import org.poc.panache.dto.CuentaDto;
 @RegisterRestClient(configKey="dataService-api")
 public interface DataService {
     @POST
-    @Path("/data/0")
+    @Path("/data/700")
     Response execute(CuentaDto request);
 }
