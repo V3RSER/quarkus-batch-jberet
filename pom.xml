@@ -49,7 +49,7 @@
     <!--   Librerías   -->
     <dependency>
       <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-jdbc-postgresql</artifactId>
+      <artifactId>quarkus-jdbc-mssql</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
